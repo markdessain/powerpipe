@@ -23,46 +23,46 @@ on:
 
 env:
   POWERPIPE_UPDATE_CHECK: false
-  GH_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   VERSION: ${{ github.event.inputs.version }}
 
 jobs:
-  ensure_branch_in_homebrew:
-    name: Ensure branch exists in homebrew-tap
-    runs-on: ubuntu-latest
-    steps:
-      - name: Calculate version
-        id: calculate_version
-        run: |
-          echo "VERSION=v${{ github.event.inputs.version }}" >> $GITHUB_ENV
+  # ensure_branch_in_homebrew:
+  #   name: Ensure branch exists in homebrew-tap
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Calculate version
+  #       id: calculate_version
+  #       run: |
+  #         echo "VERSION=v${{ github.event.inputs.version }}" >> $GITHUB_ENV
 
-      - name: Parse semver string
-        id: semver_parser
-        uses: booxmedialtd/ws-action-parse-semver@3576f3a20a39f8752fe0d8195f5ed384090285dc # v1.3.0
-        with:
-          input_string: ${{ github.event.inputs.version }}
+  #     - name: Parse semver string
+  #       id: semver_parser
+  #       uses: booxmedialtd/ws-action-parse-semver@3576f3a20a39f8752fe0d8195f5ed384090285dc # v1.3.0
+  #       with:
+  #         input_string: ${{ github.event.inputs.version }}
 
-      - name: Checkout
-        if: steps.semver_parser.outputs.prerelease == ''
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          repository: turbot/homebrew-tap
-          token: ${{ secrets.GH_ACCESS_TOKEN }}
-          ref: main
+  #     - name: Checkout
+  #       if: steps.semver_parser.outputs.prerelease == ''
+  #       uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+  #       with:
+  #         repository: turbot/homebrew-tap
+  #         token: ${{ secrets.GH_ACCESS_TOKEN }}
+  #         ref: main
 
-      - name: Delete base branch if exists
-        if: steps.semver_parser.outputs.prerelease == ''
-        run: |
-          git fetch --all
-          git push origin --delete powerpipe-brew
-          git push origin --delete $VERSION
-        continue-on-error: true
+  #     - name: Delete base branch if exists
+  #       if: steps.semver_parser.outputs.prerelease == ''
+  #       run: |
+  #         git fetch --all
+  #         git push origin --delete powerpipe-brew
+  #         git push origin --delete $VERSION
+  #       continue-on-error: true
 
-      - name: Create base branch
-        if: steps.semver_parser.outputs.prerelease == ''
-        run: |
-          git checkout -b powerpipe-brew
-          git push --set-upstream origin powerpipe-brew
+  #     - name: Create base branch
+  #       if: steps.semver_parser.outputs.prerelease == ''
+  #       run: |
+  #         git checkout -b powerpipe-brew
+  #         git push --set-upstream origin powerpipe-brew
 
   build_assets:
     name: Build and Release Dashboard Assets
@@ -241,7 +241,7 @@ jobs:
       - name: Setup release environment
         run: |-
           cd powerpipe
-          echo 'GITHUB_TOKEN=${{secrets.GH_ACCESS_TOKEN}}' > .release-env
+          echo 'GITHUB_TOKEN=${{secrets.GITHUB_TOKEN}}' > .release-env
 
       - name: Release publish
         run: |-
