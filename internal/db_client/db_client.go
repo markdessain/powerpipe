@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"log/slog"
+	"strings"
 
 	"github.com/spf13/viper"
 	"github.com/turbot/pipe-fittings/v2/backend"
@@ -26,9 +27,17 @@ func NewDbClient(ctx context.Context, connectionString string, opts ...backend.B
 	utils.LogTime("db_client.NewDbClient start")
 	defer utils.LogTime("db_client.NewDbClient end")
 
-	b, err := backend.FromConnectionString(ctx, connectionString)
-	if err != nil {
-		return nil, err
+	var b backend.Backend
+	if strings.HasPrefix(connectionString, "flightsql://") {
+		b, err = NewFlightBackend(connectionString)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		b, err = backend.FromConnectionString(ctx, connectionString)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	client := &DbClient{

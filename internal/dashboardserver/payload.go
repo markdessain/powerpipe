@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"strings"
 
 	"github.com/spf13/viper"
 	typeHelpers "github.com/turbot/go-kit/types"
@@ -118,6 +119,11 @@ func (s *Server) buildDashboardMetadataPayload(dashboard modconfig.ModTreeItem) 
 func getSearchPathMetadata(ctx context.Context, database string, searchPathConfig backend.SearchPathConfig) (*SearchPathMetadata, error) {
 	// create an empty backend for this connection string to determine if it supports search path
 	// (we do this rather than create the real backend as it is expensive to create some backend)
+
+	if strings.HasPrefix(database, "flightsql://") {
+		return nil, nil
+	}
+
 	emptyBackend, err := backend.FromConnectionString(ctx, database)
 	if err != nil {
 		return nil, err

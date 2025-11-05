@@ -3,6 +3,7 @@ package dashboardserver
 import (
 	"context"
 	"log/slog"
+	"strings"
 
 	"github.com/turbot/pipe-fittings/v2/backend"
 	"github.com/turbot/pipe-fittings/v2/connection"
@@ -36,7 +37,15 @@ func (bs *backendSupport) setFromDb(db connection.ConnectionStringProvider) {
 			// NOTE: this does not create the backend and will therefore return postgres for a steampipe backend
 			// as we cannot tell the difference purely from	the connection string
 			// This is fine as we just want to determine whether a search path is supported
-			backendName, _ := backend.NameFromConnectionString(context.Background(), connectionString)
+
+			var backendName string
+
+			if strings.HasPrefix(connectionString, "flightsql://") {
+				backendName = "flightsql"
+			} else {
+				backendName, _ = backend.NameFromConnectionString(context.Background(), connectionString)
+			}
+
 			// set supportsSearchPath if the backend is a steampipe or postgres backend
 			bs.supportsSearchPath = backendName == constants.PostgresBackendName
 		}

@@ -432,9 +432,6 @@ const DashboardList = ({ showOptions = true }) => {
           </div>
         </div>
       </div>
-      <div className="col-span-12 lg:col-span-3 mt-4 lg:mt-2 hidden md:block">
-        <CallToActions />
-      </div>
     </div>
   );
 };

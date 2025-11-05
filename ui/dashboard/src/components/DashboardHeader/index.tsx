@@ -42,18 +42,10 @@ const DashboardHeader = () => {
           <ExternalLink
             className="text-base text-foreground-lighter hover:text-foreground"
             ignoreDataMode
-            to="https://hub.powerpipe.io"
+            to="https://powerpipe.io/docs/powerpipe-hcl"
             withReferrer={true}
           >
-            <>Hub</>
-          </ExternalLink>
-          <ExternalLink
-            className="text-base text-foreground-lighter hover:text-foreground"
-            ignoreDataMode
-            to="https://powerpipe.io/docs"
-            withReferrer={true}
-          >
-            <>Docs</>
+            <>Docs (HCL)</>
           </ExternalLink>
           <ThemeToggle />
         </div>
